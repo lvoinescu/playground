@@ -15,19 +15,22 @@ public class KnightProblem {
     private final ChessBoard chessBoard;
     private final Piece knight;
     private List<Position> partialSolution = new ArrayList<>();
-
+    private int moveNumber;
 
     private KnightProblem(int maxRows, char maxColumns, Position a) {
         chessBoard = new ChessBoard(maxRows, maxColumns);
-        knight = chessBoard.createPiece(PieceType.KNIGHT,a);
-        partialSolution.add(knight.getCurrentPosition());
+        knight = chessBoard.createPiece(PieceType.KNIGHT, a);
+        chessBoard.placePieceAt(knight, a);
     }
 
     public static void main(String[] args) {
         KnightProblem knightProblem = new KnightProblem(7, 'g', new Position('a', 1));
         knightProblem.solve();
     }
+
     private void solve() {
+        partialSolution.add(knight.getCurrentPosition());
+        moveNumber++;
         long start = System.currentTimeMillis();
 
         boolean solved = solveProblem(chessBoard, knight);
@@ -50,29 +53,30 @@ public class KnightProblem {
         List<Position> possibleMoves = piece.getMoveStrategy().getPossibleMoves(chessBoard, piece.getCurrentPosition());
         Position rootPosition = piece.getCurrentPosition();
         for (Position nextPosition : possibleMoves) {
-            if (isValid(partialSolution, nextPosition)) {
+            if (isValid(nextPosition)) {
                 partialSolution.add(nextPosition);
-                piece.moveTo(nextPosition);
+                moveNumber++;
+                chessBoard.placePieceAt(piece, nextPosition);
                 boolean problemSolved = solveProblem(chessBoard, piece);
                 if (problemSolved) {
                     return true;
                 }
                 //move back!
+                moveNumber--;
+                chessBoard.placePieceAt(piece, rootPosition);
                 partialSolution.remove(partialSolution.size() - 1);
-                piece.moveTo(rootPosition);
+                chessBoard.removePieceAt(nextPosition);
             }
         }
         return false;
     }
 
-    //this is pretty slow as it is list searching
-    //should have use a matrix instead
-    private boolean isValid(List<Position> partialSolution, Position p) {
-        return !partialSolution.contains(p);
+    private boolean isValid(Position p) {
+        return chessBoard.getPieceAt(p) == null;
     }
 
     private boolean checkFullSolution() {
-        return partialSolution.size() == chessBoard.getRows() * (chessBoard.getColumns() - 'a' + 1);
+        return moveNumber == chessBoard.getRows() * (chessBoard.getColumns() - 'a' + 1);
     }
 
     private void render(ChessBoard chessBoard, List<Position> trace) {
