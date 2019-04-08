@@ -51,19 +51,18 @@ public class KnightProblem {
         }
 
         List<Position> possibleMoves = piece.getMoveStrategy().getPossibleMoves(chessBoard, piece.getCurrentPosition());
-        Position rootPosition = piece.getCurrentPosition();
         for (Position nextPosition : possibleMoves) {
             if (isValid(nextPosition)) {
                 partialSolution.add(nextPosition);
                 moveNumber++;
-                chessBoard.placePieceAt(piece, nextPosition);
-                boolean problemSolved = solveProblem(chessBoard, piece);
+                Piece newKnight = piece.clone();
+                chessBoard.placePieceAt(newKnight, nextPosition);
+                boolean problemSolved = solveProblem(chessBoard, newKnight);
                 if (problemSolved) {
                     return true;
                 }
                 //move back!
                 moveNumber--;
-                chessBoard.placePieceAt(piece, rootPosition);
                 partialSolution.remove(partialSolution.size() - 1);
                 chessBoard.removePieceAt(nextPosition);
             }
