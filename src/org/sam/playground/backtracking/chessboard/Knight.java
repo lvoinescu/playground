@@ -1,6 +1,5 @@
 package org.sam.playground.backtracking.chessboard;
 
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Knight extends Piece {
@@ -18,8 +17,7 @@ public class Knight extends Piece {
 
         return Stream.of(p1, p2, p3, p4, p5, p6, p7, p8)
                 .filter(p -> p.getRow() <= board.getRows() && p.getRow() >= 1
-                        && p.getColumn() <= board.getColumns() && p.getColumn() >= 'a')
-                .collect(Collectors.toList());
+                        && p.getColumn() <= board.getColumns() && p.getColumn() >= 'a');
     };
 
     Knight(ChessBoard board, Position currentPosition) {
@@ -32,18 +30,8 @@ public class Knight extends Piece {
     }
 
     @Override
-    public Position getCurrentPosition() {
-        return currentPosition;
-    }
-
-    @Override
     public MoveStrategy getMoveStrategy() {
         return MOVE_STRATEGY;
     }
 
-    @Override
-    public void moveTo(Position position) {
-        board.pieceMoved(this, currentPosition, position);
-        this.currentPosition = position;
-    }
 }

@@ -5,6 +5,7 @@ import org.sam.playground.backtracking.chessboard.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The knight is placed on the first block of an empty chessboard and, moving according to the rules of chess,
@@ -50,7 +51,9 @@ public class KnightProblem {
             return true;
         }
 
-        List<Position> possibleMoves = piece.getMoveStrategy().getPossibleMoves(chessBoard, piece.getCurrentPosition());
+        List<Position> possibleMoves = piece.getMoveStrategy()
+                .getPossibleMoves(chessBoard, piece.getCurrentPosition())
+                .collect(Collectors.toList());
         for (Position nextPosition : possibleMoves) {
             if (isValid(nextPosition)) {
                 partialSolution.add(nextPosition);

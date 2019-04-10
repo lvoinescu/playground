@@ -10,10 +10,10 @@ public class ChessBoard {
     public ChessBoard(int rows, char columns) {
         this.rows = rows;
         this.columns = columns;
-        this.boardMatrix = new Piece[rows][translateCharColumnToIndex((char)(columns + 1))];
+        this.boardMatrix = new Piece[rows][translateCharColumnToIndex((char) (columns + 1))];
         for (int i = 0; i < rows; i++) {
             for (char j = 'a'; j < columns; j++) {
-                this.boardMatrix[i] = new Piece[translateCharColumnToIndex((char)(columns + 1))];
+                this.boardMatrix[i] = new Piece[translateCharColumnToIndex((char) (columns + 1))];
                 this.boardMatrix[i][translateCharColumnToIndex(j)] = null;
             }
         }
@@ -23,9 +23,8 @@ public class ChessBoard {
         return boardMatrix[position.getRow() - 1][translateCharColumnToIndex(position.getColumn())];
     }
 
-    void pieceMoved(Piece piece, Position previousPosition, Position newPosition) {
-        removePieceAt(previousPosition);
-        placePieceAt(piece, newPosition);
+    public Piece getPieceAt(char column, int row) {
+        return boardMatrix[row - 1][translateCharColumnToIndex(column)];
     }
 
     public void placePieceAt(Piece piece, Position position) {
@@ -41,6 +40,8 @@ public class ChessBoard {
         switch (pieceType) {
             case KNIGHT:
                 return new Knight(this, p);
+            case QUEEN:
+                return new Queen(this, p);
         }
 
         throw new IllegalArgumentException("Not supported type " + pieceType);

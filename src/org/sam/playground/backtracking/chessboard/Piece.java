@@ -2,20 +2,19 @@ package org.sam.playground.backtracking.chessboard;
 
 public abstract class Piece implements Cloneable{
     protected Position currentPosition;
-    protected ChessBoard board;
+    private ChessBoard board;
 
-    public Piece(ChessBoard board, Position currentPosition) {
+    Piece(ChessBoard board, Position currentPosition) {
         this.board = board;
         this.currentPosition = currentPosition;
     }
 
     abstract PieceType type();
 
-    public abstract Position getCurrentPosition();
-
+    public Position getCurrentPosition() {
+        return currentPosition;
+    }
     public abstract  MoveStrategy getMoveStrategy();
-
-    public abstract void moveTo(Position p);
 
     @Override
     public Piece clone() {

@@ -1,8 +1,8 @@
 package org.sam.playground.backtracking.chessboard;
 
-import java.util.List;
+import java.util.stream.Stream;
 
 public interface MoveStrategy {
 
-    List<Position> getPossibleMoves(ChessBoard board, Position from);
+    Stream<Position> getPossibleMoves(ChessBoard board, Position from);
 }
