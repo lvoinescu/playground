@@ -1,9 +1,6 @@
 package org.sam.playground.backtracking.rectangleload;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-import java.util.Stack;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -26,22 +23,22 @@ public class FillRectangleProblemWithManySolutions {
     public static void main(String[] args) {
         FillRectangleProblemWithManySolutions fillRectangleProblem = new FillRectangleProblemWithManySolutions(10, 7, 7);
         List<Piece> pieces = Arrays.asList(
-                new Piece(4, 4, 'a'),
-                new Piece(4, 3, 'b'),
-                new Piece(4, 2, 'c'),
-                new Piece(4, 1, 'd'),
-                new Piece(3, 3, 'e'),
-                new Piece(3, 2, 'f'),
-                new Piece(3, 1, 'g'),
-                new Piece(2, 2, 'h'),
-                new Piece(2, 1, 'i'),
-                new Piece(1, 1, 'j')
+                new Piece(4, 4, 'a', 1),
+                new Piece(4, 3, 'b', 1),
+                new Piece(4, 2, 'c', 2),
+                new Piece(4, 1, 'd', 3),
+                new Piece(3, 3, 'e', 7),
+                new Piece(3, 2, 'f', 3),
+                new Piece(3, 1, 'g', 5),
+                new Piece(2, 2, 'h', 2),
+                new Piece(2, 1, 'i', 1),
+                new Piece(1, 1, 'j', 1)
         );
 
         System.out.println("Total surface: " + pieces.stream().mapToInt(p -> p.sizeY * p.sizeX).sum());
         fillRectangleProblem.reset();
         long start = System.currentTimeMillis();
-        fillRectangleProblem.solveIt(pieces);
+        fillRectangleProblem.solve(pieces);
         long end = System.currentTimeMillis();
         System.out.println("Solution(s) found in " + (end - start) + " ms");
     }
@@ -50,8 +47,10 @@ public class FillRectangleProblemWithManySolutions {
         matrix = new char[rows][columns];
     }
 
-    private void solveIt(List<Piece> pieces) {
-        solveIt(pieces, partialSolution, 0, 0, 0);
+    private void solve(List<Piece> pieces) {
+        List<Piece> clone = new ArrayList<>(pieces);
+        clone.sort((p1, p2) -> p2.priority - p1.priority);
+        solveIt(clone, partialSolution, 0, 0, 0);
     }
 
     private Stack<Piece> partialSolution = new Stack<>();
@@ -85,16 +84,20 @@ public class FillRectangleProblemWithManySolutions {
         }
 
         for (Piece piece : pieces) {
-            if (!piece.placed && canPlace(piece, lastRow, lastColumn)) {
-                place(piece, lastRow, lastColumn);
-//                print();
-                partialSolution.add(piece);
-                filledSquares += piece.squares;
-                solveIt(pieces, partialSolution, filledSquares, lastRow, lastColumn);
-                //backtrack!
-                if (!shouldStop) {
-                    unPlace(piece, lastRow, lastColumn);
-                    filledSquares -= piece.squares;
+            if (!piece.placed) {
+                boolean canBePlaced = canPlace(piece, lastRow, lastColumn)
+                        || canPlace(piece.rotate(), lastRow, lastColumn);
+
+                if (canBePlaced) {
+                    place(piece, lastRow, lastColumn);
+                    partialSolution.add(piece);
+                    filledSquares += piece.squares;
+                    solveIt(pieces, partialSolution, filledSquares, lastRow, lastColumn);
+                    //backtrack!
+                    if (!shouldStop) {
+                        unPlace(piece, lastRow, lastColumn);
+                        filledSquares -= piece.squares;
+                    }
                 }
             }
         }
@@ -149,7 +152,7 @@ public class FillRectangleProblemWithManySolutions {
                             width = Math.abs(random.nextInt(maxRows));
                             height = Math.abs(random.nextInt(maxColumns));
                         }
-                        return new Piece(width, height, (char) ('a' + i));
+                        return new Piece(width, height, (char) ('a' + i), 1);
                     })
                     .collect(Collectors.toList());
         }
@@ -159,14 +162,24 @@ public class FillRectangleProblemWithManySolutions {
         int sizeX;
         int sizeY;
         char letter;
+        final int priority;
         final int squares;
         boolean placed;
 
-        Piece(int sizeX, int sizeY, char letter) {
+        Piece(int sizeX, int sizeY, char letter, int priority) {
             this.sizeX = sizeX;
             this.sizeY = sizeY;
             this.letter = letter;
+            this.priority = priority;
             squares = sizeX * sizeY;
+        }
+
+        Piece rotate() {
+            System.out.println("Rotating " + this);
+            int temp = sizeX;
+            this.sizeX = sizeY;
+            this.sizeY = temp;
+            return this;
         }
 
         @Override
