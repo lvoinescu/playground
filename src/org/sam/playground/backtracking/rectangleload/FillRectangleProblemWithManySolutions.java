@@ -83,7 +83,8 @@ public class FillRectangleProblemWithManySolutions {
             return;
         }
 
-        for (Piece piece : pieces) {
+        for (int i = 0; i < pieces.size() && !shouldStop; i++) {
+            Piece piece = pieces.get(i);
             if (!piece.placed) {
                 boolean canBePlaced = canPlace(piece, lastRow, lastColumn)
                         || canPlace(piece.rotate(), lastRow, lastColumn);
@@ -175,7 +176,7 @@ public class FillRectangleProblemWithManySolutions {
         }
 
         Piece rotate() {
-            System.out.println("Rotating " + this);
+//            System.out.println("Rotating " + this);
             int temp = sizeX;
             this.sizeX = sizeY;
             this.sizeY = temp;
