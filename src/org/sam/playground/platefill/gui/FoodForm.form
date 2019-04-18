@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.minitechnicus.solucian.gui.MachineForm">
+  <grid id="27dc6" binding="mainPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="1372" height="396"/>
+    </constraints>
+    <properties>
+      <foreground color="-11776948"/>
+    </properties>
+    <border type="none"/>
+    <children/>
+  </grid>
+  <buttonGroups>
+    <group name="driverGroup">
+      <member id="d4d32"/>
+      <member id="e3a9f"/>
+    </group>
+  </buttonGroups>
+</form>
