@@ -37,21 +37,19 @@ public class SimulationPanel extends JPanel implements SolvingListener {
                             slice.getColumns() * step,
                             slice.getRows() * step);
 
-                    try {
-                        Color color = new Color(red, green, blue);
-                        g.setColor(color);
-                        g.fillRect((int) rectangle.getMinX(), (int) rectangle.getMinY(),
-                                (int) rectangle.getWidth(), (int) rectangle.getHeight());
+                    Color color = new Color(red, green, blue);
+                    g.setColor(color);
+                    g.fillRect((int) rectangle.getMinX(), (int) rectangle.getMinY(),
+                            (int) rectangle.getWidth(), (int) rectangle.getHeight());
 
-                        Color c1 = new Color(0,0,0);
-                        g.setColor(c1);
-                        g.drawRect((int) rectangle.getMinX(), (int) rectangle.getMinY(),
-                                (int) rectangle.getWidth(), (int) rectangle.getHeight());
+                    Color c1 = new Color(0, 0, 0);
+                    g.setColor(c1);
+                    g.drawRect((int) rectangle.getMinX(), (int) rectangle.getMinY(),
+                            (int) rectangle.getWidth(), (int) rectangle.getHeight());
 
+                    g.drawString(String.valueOf(slice.getNumber()),
+                            (int) rectangle.getMinX(), (int) rectangle.getMinY() + 10);
 
-                    } catch (Exception e) {
-                        System.out.println(e);
-                    }
                 }
             }
         }
