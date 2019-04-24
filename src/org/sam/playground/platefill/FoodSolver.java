@@ -57,25 +57,29 @@ public class FoodSolver {
             return true;
         }
 
+        boolean nothingToPlace = true;
         for (Slice slice : slices) {
-            if (!slice.isPlaced() && (canPlace(slice, lastRow, lastColumn) || canPlace(slice.rotate(), lastRow, lastColumn))) {
-                place(slice, lastRow, lastColumn);
-                partialSolution.add(slice);
-                solvingListener.stateChanged(slices, partialSolution);
+            if (!slice.isPlaced()) {
+                nothingToPlace = false;
+                if (canPlace(slice, lastRow, lastColumn) || canPlace(slice.rotate(), lastRow, lastColumn)){
+                    place(slice, lastRow, lastColumn);
+                    partialSolution.add(slice);
+                    solvingListener.stateChanged(slices, partialSolution);
 
-                filledSquares += slice.getSquares();
-                boolean solved = solveIt(slices, partialSolution, filledSquares, lastRow, lastColumn);
-                if (solved) {
-                    return true;
-                } else {
-                    //backtrack!
-                    unPlace(slice, lastRow, lastColumn);
-                    partialSolution.remove(partialSolution.size() - 1);
-                    filledSquares -= slice.getSquares();
+                    filledSquares += slice.getSquares();
+                    boolean solved = solveIt(slices, partialSolution, filledSquares, lastRow, lastColumn);
+                    if (solved) {
+                        return true;
+                    } else {
+                        //backtrack!
+                        unPlace(slice, lastRow, lastColumn);
+                        partialSolution.remove(partialSolution.size() - 1);
+                        filledSquares -= slice.getSquares();
+                    }
                 }
             }
         }
-        return false;
+        return nothingToPlace;
     }
 
     private void unPlace(Slice slice, int row, int column) {

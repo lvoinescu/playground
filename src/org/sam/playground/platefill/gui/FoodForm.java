@@ -16,7 +16,7 @@ public class FoodForm extends JPanel implements ActionListener {
 
     private FoodForm() {
         createUIComponents();
-        Plate plate = new Plate(12, 3);
+        Plate plate = new Plate(14, 15);
         Cook cook = new Cook(1, 5);
 //        List<Sandwich> sandwiches = cook.createSandwiches(100);
         List<Sandwich> sandwiches = Arrays.asList(

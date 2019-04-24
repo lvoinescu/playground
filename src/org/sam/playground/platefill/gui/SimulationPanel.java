@@ -65,7 +65,7 @@ public class SimulationPanel extends JPanel implements SolvingListener {
         this.slices = slices;
         repaint();
         try {
-            Thread.sleep(300);
+            Thread.sleep(1);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
