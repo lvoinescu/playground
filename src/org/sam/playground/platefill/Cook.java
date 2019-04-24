@@ -8,10 +8,12 @@ import java.util.stream.IntStream;
 public class Cook {
 
     private final Random random;
+    private final int minSize;
     private final int maxSlice;
 
-    public Cook(int maxSlice) {
-        this.maxSlice = maxSlice;
+    public Cook(int minSize, int maxSize) {
+        this.minSize = minSize;
+        this.maxSlice = maxSize;
         random = new Random();
     }
 
@@ -21,7 +23,7 @@ public class Cook {
                 .mapToObj(i -> {
                     int width = 0;
                     int height = 0;
-                    while (width == 0 || height == 0) {
+                    while (width < minSize || height < minSize) {
                         width = Math.abs(random.nextInt(maxSlice));
                         height = Math.abs(random.nextInt(maxSlice));
                     }

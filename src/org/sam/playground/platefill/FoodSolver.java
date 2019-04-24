@@ -61,7 +61,7 @@ public class FoodSolver {
             if (!slice.isPlaced() && (canPlace(slice, lastRow, lastColumn) || canPlace(slice.rotate(), lastRow, lastColumn))) {
                 place(slice, lastRow, lastColumn);
                 partialSolution.add(slice);
-                solvingListener.stateChanged(partialSolution);
+                solvingListener.stateChanged(slices, partialSolution);
 
                 filledSquares += slice.getSquares();
                 boolean solved = solveIt(slices, partialSolution, filledSquares, lastRow, lastColumn);

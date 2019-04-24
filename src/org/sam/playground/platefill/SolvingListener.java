@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface SolvingListener {
 
-    void stateChanged(List<Slice> slices);
+    void stateChanged(List<Slice> slices, List<Slice> partialSolution);
 
     void problemSolved(List<Slice> slices);
 }

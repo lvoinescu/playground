@@ -10,6 +10,7 @@ import java.util.List;
 
 public class SimulationPanel extends JPanel implements SolvingListener {
 
+    private List<Slice> partialSolution;
     private List<Slice> slices;
 
     SimulationPanel() {
@@ -21,17 +22,15 @@ public class SimulationPanel extends JPanel implements SolvingListener {
         super.paintComponent(g);
         int step = 20;
 
-        Color backColor = new Color(255, 255, 255);
-        g.setColor(backColor); //use g2 instead
-        g.fillRect(0, 0, 1400, 600);
-        if (slices != null) {
-            synchronized (slices) {
-                for (int i = 0; i < slices.size(); i++) {
-                    Slice slice = slices.get(i);
 
-                    float red = ((float) i / slices.size());
-                    float green = Math.abs(1 - ((float) i / slices.size()));
-                    float blue = Math.abs((float) (i - 0.6) / slices.size());
+        if (partialSolution != null) {
+            synchronized (partialSolution) {
+                for (int i = 0; i < partialSolution.size(); i++) {
+                    Slice slice = partialSolution.get(i);
+
+                    float red = ((float) slice.getNumber() / slices.size());
+                    float green = Math.abs(1 - ((float) slice.getNumber() / slices.size()));
+                    float blue = Math.abs((float) (slice.getNumber() - 0.6) / slices.size());
 
                     Rectangle rectangle = new Rectangle(slice.getColumn() * step, slice.getRow() * step,
                             slice.getColumns() * step,
@@ -47,25 +46,34 @@ public class SimulationPanel extends JPanel implements SolvingListener {
                     g.drawRect((int) rectangle.getMinX(), (int) rectangle.getMinY(),
                             (int) rectangle.getWidth(), (int) rectangle.getHeight());
 
-                    g.drawString(String.valueOf(slice.getNumber()),
+                    g.setFont(new Font("Arial", 1, 9));
+                    g.drawString(String.valueOf(slice.getNumber()) + "(" + slice.getRows() + "," + slice.getColumns() + ")",
                             (int) rectangle.getMinX(), (int) rectangle.getMinY() + 10);
 
                 }
             }
         }
+        Color backColor = new Color(100, 200, 140);
+        g.setColor(backColor); //use g2 instead
+        g.drawRect(0, 0, 1400, 600);
         g.dispose();
     }
 
     @Override
-    public void stateChanged(List<Slice> slices) {
-
+    public void stateChanged(List<Slice>slices,  List<Slice> partialSolution) {
+        this.partialSolution = partialSolution;
+        this.slices = slices;
+        repaint();
+        try {
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void problemSolved(List<Slice> slices) {
-        this.slices = slices;
+        this.partialSolution = slices;
         repaint();
     }
-
-
 }
