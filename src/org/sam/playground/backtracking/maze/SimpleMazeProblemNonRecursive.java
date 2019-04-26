@@ -1,18 +1,20 @@
 package org.sam.playground.backtracking.maze;
 
-public class SimpleMazeProblem {
+import java.util.Stack;
+
+public class SimpleMazeProblemNonRecursive {
 
 
     private int[][] matrix;
     private Point in;
     private Point out;
 
-    private SimpleMazeProblem() {
+    private SimpleMazeProblemNonRecursive() {
         this.matrix = new int[12][20];
     }
 
     public static void main(String[] args) {
-        SimpleMazeProblem simpleMazeProblem = new SimpleMazeProblem();
+        SimpleMazeProblemNonRecursive simpleMazeProblem = new SimpleMazeProblemNonRecursive();
         //12x20 matrix
         String maze = "" +
                 "####################" +
@@ -40,8 +42,8 @@ public class SimpleMazeProblem {
         long start = System.currentTimeMillis();
         boolean solved = solve(in);
         long end = System.currentTimeMillis();
-        System.out.println("Finished in " + (end - start) + " ms");
 
+        System.out.println("Finished in " + (end - start) + " ms");
         if (solved) {
             System.out.println("Maze escaped!");
             print(matrix, 12, 20);
@@ -53,38 +55,65 @@ public class SimpleMazeProblem {
 
     private boolean solve(Point currentPoint) {
 
-        if (currentPoint.row < 0 || currentPoint.row > 11
-                || currentPoint.column < 0 || currentPoint.column > 19
-                || matrix[currentPoint.row][currentPoint.column] == 1
-                || matrix[currentPoint.row][currentPoint.column] == 2
-                ) {
-            return false;
-        }
+        Stack<Point> stack = new Stack<>();
+
         matrix[currentPoint.row][currentPoint.column] = 2;
 
-        if (currentPoint.equals(out)) {
-            return true;
-        }
+        stack.push(currentPoint);
+        Point parent = currentPoint;
+        while (stack.size() > 0) {
+            if (parent.equals(out)) {
+                return true;
+            }
 
-        if (solve(new Point(currentPoint.row + 1, currentPoint.column))) {
-            return true;
-        }
+            parent = stack.peek();
 
-        if (solve(new Point(currentPoint.row - 1, currentPoint.column))) {
-            return true;
-        }
+            Point child1 = new Point(parent.row + 1, parent.column);
+            Point child2 = new Point(parent.row - 1, parent.column);
+            Point child3 = new Point(parent.row, parent.column - 1);
+            Point child4 = new Point(parent.row, parent.column + 1);
 
-        if (solve(new Point(currentPoint.row, currentPoint.column + 1))) {
-            return true;
-        }
 
-        if (solve(new Point(currentPoint.row, currentPoint.column - 1))) {
-            return true;
+            boolean deadEnd = true;
+            if (testPoint(child1)) {
+                deadEnd = false;
+                stack.push(child1);
+            } else {
+                if (testPoint(child2)) {
+                    deadEnd = false;
+                    stack.push(child2);
+                } else {
+                    if (testPoint(child3)) {
+                        deadEnd = false;
+                        stack.push(child3);
+                    } else {
+                        if (testPoint(child4)) {
+                            deadEnd = false;
+                            stack.push(child4);
+                        }
+                    }
+                }
+            }
+
+            if (deadEnd) {
+                Point point = stack.pop();
+                matrix[point.row][point.column] = 3;
+
+            } else {
+                Point point = stack.peek();
+                matrix[point.row][point.column] = 2;
+            }
         }
-        matrix[currentPoint.row][currentPoint.column] = 0;
 
         return false;
     }
+
+    private boolean testPoint(Point point) {
+        return point.row >= 0 && point.row <= 11
+                && point.column >= 0 && point.column <= 19
+                && matrix[point.row][point.column] == 0;
+    }
+
 
     private int[][] parseMaze(String input) {
         int[][] matrix = new int[12][20];
@@ -111,7 +140,7 @@ public class SimpleMazeProblem {
 
 
             for (int j = 0; j < columns; j++) {
-                char c = matrix[i][j] != 0 ? (matrix[i][j] == 2 ? '.' : '#') : ' ';
+                char c = matrix[i][j] != 0 && matrix[i][j] != 3 ? (matrix[i][j] == 2 ? '.' : '#') : ' ';
                 System.out.print(c);
             }
             if (i == out.row) {
