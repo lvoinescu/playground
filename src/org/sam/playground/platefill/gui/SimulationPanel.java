@@ -22,34 +22,37 @@ public class SimulationPanel extends JPanel implements SolvingListener {
         super.paintComponent(g);
         int step = 20;
 
-
         if (partialSolution != null) {
             synchronized (partialSolution) {
-                for (int i = 0; i < partialSolution.size(); i++) {
-                    Slice slice = partialSolution.get(i);
+                try {
+                    for (int i = 0; i < partialSolution.size(); i++) {
+                        Slice slice = partialSolution.get(i);
 
-                    float red = ((float) slice.getNumber() / slices.size());
-                    float green = Math.abs(1 - ((float) slice.getNumber() / slices.size()));
-                    float blue = Math.abs((float) (slice.getNumber() - 0.6) / slices.size());
+                        float red = ((float) slice.getNumber() / slices.size());
+                        float green = Math.abs(1 - ((float) slice.getNumber() / slices.size()));
+                        float blue = Math.abs((float) (slice.getNumber() - 0.6) / slices.size());
 
-                    Rectangle rectangle = new Rectangle(slice.getColumn() * step, slice.getRow() * step,
-                            slice.getColumns() * step,
-                            slice.getRows() * step);
+                        Rectangle rectangle = new Rectangle(slice.getColumn() * step, slice.getRow() * step,
+                                slice.getColumns() * step,
+                                slice.getRows() * step);
 
-                    Color color = new Color(red, green, blue);
-                    g.setColor(color);
-                    g.fillRect((int) rectangle.getMinX(), (int) rectangle.getMinY(),
-                            (int) rectangle.getWidth(), (int) rectangle.getHeight());
+                        Color color = new Color(red, green, blue);
+                        g.setColor(color);
+                        g.fillRect((int) rectangle.getMinX(), (int) rectangle.getMinY(),
+                                (int) rectangle.getWidth(), (int) rectangle.getHeight());
 
-                    Color c1 = new Color(0, 0, 0);
-                    g.setColor(c1);
-                    g.drawRect((int) rectangle.getMinX(), (int) rectangle.getMinY(),
-                            (int) rectangle.getWidth(), (int) rectangle.getHeight());
+                        Color c1 = new Color(0, 0, 0);
+                        g.setColor(c1);
+                        g.drawRect((int) rectangle.getMinX(), (int) rectangle.getMinY(),
+                                (int) rectangle.getWidth(), (int) rectangle.getHeight());
 
-                    g.setFont(new Font("Arial", 1, 9));
-                    g.drawString(String.valueOf(slice.getNumber()) + "(" + slice.getRows() + "," + slice.getColumns() + ")",
-                            (int) rectangle.getMinX(), (int) rectangle.getMinY() + 10);
+                        g.setFont(new Font("Arial", Font.PLAIN, 9));
+                        g.drawString(String.valueOf(slice.getNumber()) + "(" + slice.getRows() + "," + slice.getColumns() + ")",
+                                (int) rectangle.getMinX() + 2, (int) rectangle.getMinY() + 10);
 
+                    }
+                } catch (Exception e) {
+                    System.out.println(e);
                 }
             }
         }
@@ -60,20 +63,17 @@ public class SimulationPanel extends JPanel implements SolvingListener {
     }
 
     @Override
-    public void stateChanged(List<Slice>slices,  List<Slice> partialSolution) {
+    public void stateChanged(List<Slice> slices, List<Slice> partialSolution) {
         this.partialSolution = partialSolution;
         this.slices = slices;
         repaint();
-        try {
-            Thread.sleep(1);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
-    public void problemSolved(List<Slice> slices) {
-        this.partialSolution = slices;
+    public void problemSolved(List<Slice> slices, List<Slice> partialSolution) {
+        this.partialSolution = partialSolution;
+        this.slices = slices;
+
         repaint();
     }
 }

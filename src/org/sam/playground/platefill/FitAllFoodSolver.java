@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-public class FoodSolver {
+public class FitAllFoodSolver implements Solver {
 
     private final List<Slice> slices;
     private final SolvingListener solvingListener;
@@ -13,7 +13,7 @@ public class FoodSolver {
     private final int columns;
     private Stack<Slice> partialSolution = new Stack<>();
 
-    public FoodSolver(Plate plate, List<Sandwich> sandwiches, SolvingListener solvingListener) {
+    FitAllFoodSolver(Plate plate, List<Sandwich> sandwiches, SolvingListener solvingListener) {
         List<Slice> list = new ArrayList<>();
         for (int i = 0; i < sandwiches.size(); i++) {
             Sandwich sandwich = sandwiches.get(i);
@@ -27,19 +27,23 @@ public class FoodSolver {
         this.rows = plate.getHeight();
     }
 
+    @Override
     public boolean solve() {
-        return solveIt(slices);
+        boolean b = solveIt(slices);
+        solvingListener.problemSolved(slices, partialSolution);
+
+        return b;
     }
 
     private boolean solveIt(List<Slice> slices) {
-//        slices.sort((a, b) -> b.getColumns() * b.getRows() - a.getColumns()* a.getRows());
+        slices.sort((a, b) -> b.getColumns() * b.getRows() - a.getColumns()* a.getRows());
         return solveIt(slices, partialSolution, 0, 0, 0);
     }
 
     private boolean solveIt(List<Slice> slices, Stack<Slice> partialSolution, int filledSquares, int lastRow, int lastColumn) {
 
         if (filledSquares == rows * columns) {
-            solvingListener.problemSolved(partialSolution);
+            solvingListener.problemSolved(slices, partialSolution);
             return true;
         }
 
@@ -60,7 +64,6 @@ public class FoodSolver {
         boolean nothingToPlace = true;
         for (Slice slice : slices) {
             if (!slice.isPlaced()) {
-                nothingToPlace = false;
                 if (canPlace(slice, lastRow, lastColumn) || canPlace(slice.rotate(), lastRow, lastColumn)){
                     place(slice, lastRow, lastColumn);
                     partialSolution.add(slice);
@@ -76,6 +79,9 @@ public class FoodSolver {
                         partialSolution.remove(partialSolution.size() - 1);
                         filledSquares -= slice.getSquares();
                     }
+                }
+                else{
+                    nothingToPlace = false;
                 }
             }
         }

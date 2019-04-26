@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-public class FoodLineSolver {
+public class FoodLineSolver implements Solver{
 
     private final List<Slice> slices;
     private final SolvingListener solvingListener;
@@ -13,7 +13,7 @@ public class FoodLineSolver {
     private final int columns;
     private Stack<Slice> partialSolution = new Stack<>();
 
-    public FoodLineSolver(Plate plate, List<Sandwich> sandwiches, SolvingListener solvingListener) {
+    FoodLineSolver(Plate plate, List<Sandwich> sandwiches, SolvingListener solvingListener) {
         List<Slice> list = new ArrayList<>();
         for (int i = 0; i < sandwiches.size(); i++) {
             Sandwich sandwich = sandwiches.get(i);
@@ -27,12 +27,13 @@ public class FoodLineSolver {
         this.rows = plate.getHeight();
     }
 
+    @Override
     public boolean solve() {
         return solveIt(slices);
     }
 
     private boolean solveIt(List<Slice> slices) {
-//        slices.sort((a, b) -> b.getColumns() * b.getRows() - a.getColumns()* a.getRows());
+        slices.sort((a, b) -> b.getColumns() * b.getRows() - a.getColumns()* a.getRows());
         return solveIt(slices, partialSolution);
     }
 
@@ -40,10 +41,7 @@ public class FoodLineSolver {
 
         boolean rowSolved = false;
         for (int i = 0; i < rows; i++) {
-            rowSolved = solveRow(slices, i, columns, 0, true);
-            if (!rowSolved) {
-                rowSolved = solveRow(slices, i, columns, 0, false);
-            }
+            rowSolved = solveRow(slices, i, columns, 0);
             System.out.println(rowSolved);
             solvingListener.stateChanged(slices, partialSolution);
         }
@@ -51,7 +49,7 @@ public class FoodLineSolver {
     }
 
 
-    private boolean solveRow(List<Slice> slices, int row, int rowSize, int rowPosition, boolean searchForFit) {
+    private boolean solveRow(List<Slice> slices, int row, int rowSize, int rowPosition) {
 
         while (rowPosition < rowSize && matrix[row][rowPosition] > 0) {
             rowPosition++;
@@ -71,7 +69,7 @@ public class FoodLineSolver {
                     place(slice, row, rowPosition);
                     partialSolution.add(slice);
                     solvingListener.stateChanged(slices, partialSolution);
-                    solvedRow = solveRow(slices, row, rowSize, rowPosition + slice.getColumns(), searchForFit);
+                    solvedRow = solveRow(slices, row, rowSize, rowPosition + slice.getColumns());
                     if (solvedRow) {
                         return true;
                     } else {
@@ -84,7 +82,7 @@ public class FoodLineSolver {
                     place(slice, row, rowPosition);
                     partialSolution.add(slice);
                     solvingListener.stateChanged(slices, partialSolution);
-                    solvedRow = solveRow(slices, row, rowSize, rowPosition + slice.getColumns(), searchForFit);
+                    solvedRow = solveRow(slices, row, rowSize, rowPosition + slice.getColumns());
                     if (solvedRow) {
                         return true;
                     } else {

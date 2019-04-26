@@ -6,5 +6,5 @@ public interface SolvingListener {
 
     void stateChanged(List<Slice> slices, List<Slice> partialSolution);
 
-    void problemSolved(List<Slice> slices);
+    void problemSolved(List<Slice> slices, List<Slice> partialSolution);
 }
