@@ -14,6 +14,7 @@ public class HanoiProblem {
     private static Stack<Integer> destination = new Stack<>();
 
     public static void main(String[] args) {
+        source.push(6);
         source.push(5);
         source.push(4);
         source.push(3);
@@ -38,9 +39,7 @@ public class HanoiProblem {
         if (len > 2) {
             solve(source, len - 1, destination, pivot);
 
-            if (canMove(source, destination)) {
-                move(source, destination);
-            }
+            move(source, destination);
             solve(pivot, len - 1, source, destination);
         } else {
             move(source, pivot);
