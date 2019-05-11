@@ -5,13 +5,15 @@ import java.util.Stack;
 import java.util.stream.Stream;
 
 /*
-A non-optimized solving for Hanoi problem
+An  algorithm for solving Hanoi problem
  */
 public class HanoiProblem {
 
     private static Stack<Integer> source = new Stack<>();
     private static Stack<Integer> pivot = new Stack<>();
     private static Stack<Integer> destination = new Stack<>();
+
+    private static int moveCount;
 
     public static void main(String[] args) {
         source.push(6);
@@ -23,11 +25,13 @@ public class HanoiProblem {
 
         printStacks();
         solve(source, source.size(), pivot, destination);
+        System.out.println("Total moves: " + moveCount);
     }
 
     private static void move(Stack<Integer> a, Stack<Integer> b) {
         b.push(a.pop());
         printStacks();
+        moveCount++;
     }
 
     private static void solve(Stack<Integer> source, int len, Stack<Integer> pivot, Stack<Integer> destination) {
