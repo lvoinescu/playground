@@ -25,11 +25,6 @@ public class HanoiProblem {
         solve(source, source.size(), pivot, destination);
     }
 
-    private static boolean canMove(Stack<Integer> a, Stack<Integer> b) {
-        return (a.size() > 0 && b.size() > 0 && a.peek() < b.peek())
-                || (a.size() > 0 && b.size() == 0);
-    }
-
     private static void move(Stack<Integer> a, Stack<Integer> b) {
         b.push(a.pop());
         printStacks();
