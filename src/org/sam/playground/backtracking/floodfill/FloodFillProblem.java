@@ -1,4 +1,4 @@
-package org.sam.playground.recursion.floodfill;
+package org.sam.playground.backtracking.floodfill;
 
 import java.util.Objects;
 
