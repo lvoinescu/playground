@@ -5,20 +5,20 @@ import java.util.Arrays;
 public class ArrayPermutations {
 
     public static void main(String[] args) {
-        int[] input = new int[]{1, 2, 3, 4, 5};
+        int[] input = new int[]{1, 2, 3};
 
         permutations(input, 0);
     }
 
     private static void permutations(int[] input, int start) {
         if (start >= input.length) {
+            System.out.println(Arrays.toString(input));
             return;
         }
-        for (int i = 0; i < input.length; i++) {
-            swap(input, start, i);
-            System.out.println(Arrays.toString(input));
-            permutations(input, start + 1);
+        for (int i = start; i < input.length; i++) {
             swap(input, i, start);
+            permutations(input, start + 1);
+            swap(input, start, i);
         }
     }
 
